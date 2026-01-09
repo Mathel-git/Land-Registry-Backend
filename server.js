@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://land-registry-frontend-ten.vercel.app/", // replace later
+      "https://land-registry-frontend-ten.vercel.app", // replace later
     ],
     credentials: true,
   })
