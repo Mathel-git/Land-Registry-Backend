@@ -8,8 +8,6 @@ console.log("JWT SECRET AT STARTUP:", process.env.JWT_SECRET);
 
 connectDB();
 
-const cors = require("cors");
-
 app.use(
   cors({
     origin: [
