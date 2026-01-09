@@ -6,7 +6,6 @@ const cors = require("cors");
 dotenv.config();
 
 // ⚠️ Remove this line in production
-console.log("JWT SECRET AT STARTUP:", process.env.JWT_SECRET);
 
 // Connect Database
 connectDB();
@@ -22,7 +21,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://your-frontend.vercel.app", // replace later
+      "https://land-registry-frontend-ten.vercel.app/", // replace later
     ],
     credentials: true,
   })
