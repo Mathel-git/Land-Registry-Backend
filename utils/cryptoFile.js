@@ -2,35 +2,39 @@ const crypto = require("crypto");
 const fs = require("fs");
 
 const algorithm = "aes-256-cbc";
-const key = Buffer.from(process.env.ENCRYPTION_KEY, "hex");
-const iv = Buffer.from(process.env.ENCRYPTION_IV, "hex");
+
+const encryptionKey = process.env.ENCRYPTION_KEY;
+const encryptionIv = process.env.ENCRYPTION_IV;
+
+if (!encryptionKey || !encryptionIv) {
+  throw new Error(
+    "ENCRYPTION_KEY or ENCRYPTION_IV missing in environment variables"
+  );
+}
+
+const key = Buffer.from(encryptionKey, "hex");
+const iv = Buffer.from(encryptionIv, "hex");
+
+if (key.length !== 32) {
+  throw new Error("ENCRYPTION_KEY must be 32 bytes (64 hex characters)");
+}
+
+if (iv.length !== 16) {
+  throw new Error("ENCRYPTION_IV must be 16 bytes (32 hex characters)");
+}
 
 function encryptFile(inputPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const input = fs.createReadStream(inputPath);
-    const output = fs.createWriteStream(outputPath);
-
-    input.pipe(cipher).pipe(output);
-
-    output.on("finish", resolve);
-    output.on("error", reject);
-    input.on("error", reject);
-  });
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  fs.createReadStream(inputPath)
+    .pipe(cipher)
+    .pipe(fs.createWriteStream(outputPath));
 }
 
 function decryptFile(inputPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    const input = fs.createReadStream(inputPath);
-    const output = fs.createWriteStream(outputPath);
-
-    input.pipe(decipher).pipe(output);
-
-    output.on("finish", resolve);
-    output.on("error", reject);
-    input.on("error", reject);
-  });
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  fs.createReadStream(inputPath)
+    .pipe(decipher)
+    .pipe(fs.createWriteStream(outputPath));
 }
 
 module.exports = { encryptFile, decryptFile };

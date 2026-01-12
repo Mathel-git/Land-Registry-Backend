@@ -5,18 +5,11 @@ const cors = require("cors");
 
 dotenv.config();
 
-// ⚠️ Remove this line in production
+const app = express(); // ✅ THIS WAS MISSING
 
-// Connect Database
 connectDB();
 
-// Init App
-const app = express();
-
-// Port
-const PORT = process.env.PORT || 5000;
-
-// Middleware
+// ✅ CORS CONFIG
 app.use(
   cors({
     origin: [
@@ -45,12 +38,12 @@ app.use("/api/community", communityRoutes);
 app.use("/api/families", familyRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Health Check
 app.get("/", (req, res) => {
   res.send("Land Registry API Running");
 });
 
-// Start Server
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
